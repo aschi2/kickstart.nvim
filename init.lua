@@ -207,6 +207,26 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Setup Justfile Detection
+-- Create the autocmd
+vim.api.nvim_create_autocmd({ 'VimEnter', 'BufWinEnter', 'BufRead', 'BufNewFile' }, {
+  pattern = { '*.just', 'justfile', '.justfile' },
+  group = vim.api.nvim_create_augroup('JustfileSettings', { clear = true }),
+  callback = function()
+    vim.bo.filetype = 'just'
+    vim.bo.commentstring = '# %s'
+  end,
+})
+
+-- Setup kdl Detection
+-- Create the autocmd
+vim.api.nvim_create_autocmd({ 'VimEnter', 'BufWinEnter', 'BufRead', 'BufNewFile' }, {
+  pattern = { '*.kdl' },
+  group = vim.api.nvim_create_augroup('KDLSettings', { clear = true }),
+  callback = function()
+    vim.bo.commentstring = '// %s'
+  end,
+})
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -875,6 +895,7 @@ require('lazy').setup({
         'javascript',
         'typescript',
         'markdown_inline',
+        'just',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
