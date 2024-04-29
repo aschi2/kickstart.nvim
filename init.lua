@@ -860,8 +860,24 @@ require('lazy').setup({
       -- set use_icons to true if you have a Nerd Font
       statusline.setup { use_icons = vim.g.have_nerd_font }
 
+      -- setup automatic root finding utility
       require('mini.misc').setup {}
       MiniMisc.setup_auto_root()
+
+      -- setup mini file explorer and setup toggle
+      require('mini.files').setup {}
+      require('mini.files').setup()
+      local minifiles_toggle = function(...)
+        if not MiniFiles.close() then
+          MiniFiles.open(...)
+        end
+      end
+
+      -- setup mini animations
+      require('mini.animate').setup()
+
+      -- Use different left hand side for your liking
+      vim.keymap.set('n', '\\', minifiles_toggle)
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
