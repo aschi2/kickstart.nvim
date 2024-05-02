@@ -159,6 +159,18 @@ vim.opt.showtabline = 2
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+--  Add Buffer Next Keymap
+vim.keymap.set('n', '<leader>b', ':bn<CR>', { desc = 'Next [B]uffer' })
+
+-- Add Better Visual Selection Keymaps
+vim.keymap.set('v', '>', '>gv', { desc = 'Better visual indent right' })
+vim.keymap.set('v', '<', '<gv', { desc = 'Better visual indent left' })
+
+-- Moving Text
+vim.keymap.set('v', '<leader>k', ":m '<-2<CR>gv=gv", { desc = 'Move selected text up' })
+vim.keymap.set('v', '<leader>j', ":m '>+1<CR>gv=gv", { desc = 'Move selected text down' })
+vim.keymap.set('n', '<leader>k', ':m .-2<CR>==', { desc = 'Move current line up' })
+vim.keymap.set('n', '<leader>j', ':m .+1<CR>==', { desc = 'Move current line down' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
