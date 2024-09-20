@@ -114,13 +114,9 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-<<<<<<< HEAD
--- vim.opt.clipboard = 'unnamedplus'
-=======
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
->>>>>>> upstream/master
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -184,14 +180,7 @@ vim.keymap.set('n', '<leader>j', ':m .+1<CR>==', { desc = 'Move current line dow
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-<<<<<<< HEAD
--- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
--- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
--- vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
--- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
-=======
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
->>>>>>> upstream/master
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -359,23 +348,6 @@ require('lazy').setup({
       },
 
       -- Document existing key chains
-<<<<<<< HEAD
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-        ['<leader>x'] = { name = 'Trouble', _ = 'which_key_ignore' },
-      }
-      -- visual mode
-      require('which-key').register({
-        ['<leader>h'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
-    end,
-=======
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
@@ -386,7 +358,6 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
->>>>>>> upstream/master
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -688,13 +659,8 @@ require('lazy').setup({
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
-<<<<<<< HEAD
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
-=======
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
->>>>>>> upstream/master
         --
 
         lua_ls = {
@@ -782,15 +748,9 @@ require('lazy').setup({
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
-<<<<<<< HEAD
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
-        just = { 'just' },
-=======
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
->>>>>>> upstream/master
+        just = { 'just' },
       },
     },
   },
@@ -904,15 +864,12 @@ require('lazy').setup({
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
-<<<<<<< HEAD
           { name = 'copilot' },
-=======
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
->>>>>>> upstream/master
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
@@ -1017,7 +974,6 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-<<<<<<< HEAD
       ensure_installed = {
         'bash',
         'c',
@@ -1040,9 +996,6 @@ require('lazy').setup({
         'just',
         'typescript',
       },
-=======
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
->>>>>>> upstream/master
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
