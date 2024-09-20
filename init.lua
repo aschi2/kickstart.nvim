@@ -385,15 +385,22 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      -- local actions = require("telescope.actions")
+      local open_with_trouble = require('trouble.sources.telescope').open
+
+      -- Use this to add more results without clearing the trouble list
+      -- local add_to_trouble = require("trouble.sources.telescope").add
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = { ['<c-t>'] = open_with_trouble },
+            n = { ['<c-t>'] = open_with_trouble },
+            --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -606,13 +613,15 @@ require('lazy').setup({
         pyright = {},
         rust_analyzer = {},
         terraformls = {},
+        tailwindcss = {},
+
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        tsserver = {},
         --
 
         lua_ls = {
@@ -888,6 +897,12 @@ require('lazy').setup({
       -- setup mini animations
       require('mini.animate').setup()
 
+      -- setup mini.map
+      require('mini.map').setup {
+        symbols = { encode = require('mini.map').gen_encode_symbols.dot '4x2' },
+      }
+      vim.keymap.set('n', '<leader>mm', MiniMap.toggle, { desc = '[M]ini [M]ap' })
+
       -- Use different left hand side for your liking
       vim.keymap.set('n', '\\', minifiles_toggle)
 
@@ -927,6 +942,7 @@ require('lazy').setup({
         'typescript',
         'markdown_inline',
         'just',
+        'typescript',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,

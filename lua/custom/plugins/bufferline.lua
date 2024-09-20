@@ -3,18 +3,18 @@
 --
 
 return {
-	"akinsho/bufferline.nvim",
-	version = "*",
-	-- `BufReadPre` event to prevent show a `No Name` buffer when open a directory use nvim directly
-	event = "BufReadPre",
-	dependencies = {
-		"nvim-tree/nvim-web-devicons",
-	},
-	config = function()
-		require("bufferline").setup({
-			options = {
-				diagnostics = "nvim_lsp",
-			},
-		})
-	end,
+  'akinsho/bufferline.nvim',
+  -- version = "*",
+  -- `BufReadPre` event to prevent show a `No Name` buffer when open a directory use nvim directly
+  event = 'BufReadPre',
+  dependencies = {
+    'nvim-tree/nvim-web-devicons',
+  },
+  config = function()
+    require('bufferline').setup {
+      options = {
+        diagnostics = 'nvim_lsp',
+      },
+    }
+  end,
 }
