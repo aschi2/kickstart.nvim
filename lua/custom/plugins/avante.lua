@@ -4,7 +4,7 @@ return {
   build = 'make',
   opts = {
     -- add any opts here
-    provider = 'openai',
+    -- provider = 'openai',
   },
   dependencies = {
     'nvim-tree/nvim-web-devicons',
