@@ -23,6 +23,7 @@ return {
       dashboard.button('e', '  > New file', ':ene <BAR> startinsert <CR>'),
       dashboard.button('r', '  > Recent', ':Telescope oldfiles<CR>'),
       dashboard.button('s', '  > Settings', ':e ~/.config/nvim/init.lua | pwd<CR>'),
+      dashboard.button('l', '  > Lazy', ':Lazy<CR>'),
       dashboard.button('q', '  > Quit NVIM', ':qa<CR>'),
     }
 
