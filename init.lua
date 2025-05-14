@@ -526,6 +526,7 @@ require('lazy').setup({
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { path = 'snacks.nvim', words = { 'Snacks' } },
       },
     },
   },
@@ -797,7 +798,6 @@ require('lazy').setup({
       --
       -- `mason` had to be setup earlier: to configure its options see the
       -- `dependencies` table for `nvim-lspconfig` above.
-      require('mason').setup { PATH = 'append' }
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
@@ -901,73 +901,62 @@ require('lazy').setup({
         opts = {},
       },
       'folke/lazydev.nvim',
+      'giuxtaposition/blink-cmp-copilot',
     },
     --- @module 'blink.cmp'
     --- @type blink.cmp.Config
     opts = {
-      keymap = {
-        -- 'default' (recommended) for mappings similar to built-in completions
-        --   <c-y> to accept ([y]es) the completion.
-        --    This will auto-import if your LSP supports it.
-        --    This will expand snippets if the LSP sent a snippet.
-        -- 'super-tab' for tab to accept
-        -- 'enter' for enter to accept
-        -- 'none' for no mappings
-        --
-        -- For an understanding of why the 'default' preset is recommended,
-        -- you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        --
-        -- All presets have the following mappings:
-        -- <tab>/<s-tab>: move to right/left of your snippet expansion
-        -- <c-space>: Open menu or open docs if already open
-        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-        -- <c-e>: Hide menu
-        -- <c-k>: Toggle signature help
-        --
-        -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
-
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-      },
-
-      appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = 'mono',
-      },
-
-      completion = {
-        -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
-      },
-
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'copilot' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-        },
-        per_filetype = {
-          codecompanion = { "codecompanion" },
+          copilot = {
+            name = 'copilot',
+            module = 'blink-cmp-copilot',
+            score_offset = 100,
+            async = true,
+            transform_items = function(_, items)
+              local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
+              local kind_idx = #CompletionItemKind + 1
+              CompletionItemKind[kind_idx] = 'Copilot'
+              for _, item in ipairs(items) do
+                item.kind = kind_idx
+              end
+              return items
+            end,
+          },
         },
       },
-
-      snippets = { preset = 'luasnip' },
-
-      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-      -- which automatically downloads a prebuilt binary when enabled.
-      --
-      -- By default, we use the Lua implementation instead, but you may enable
-      -- the rust implementation via `'prefer_rust_with_warning'`
-      --
-      -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
-
-      -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true },
+      appearance = {
+        kind_icons = {
+          Copilot = '',
+          Text = '󰉿',
+          Method = '󰊕',
+          Function = '󰊕',
+          Constructor = '󰒓',
+          Field = '󰜢',
+          Variable = '󰆦',
+          Property = '󰖷',
+          Class = '󱡠',
+          Interface = '󱡠',
+          Struct = '󱡠',
+          Module = '󰅩',
+          Unit = '󰪚',
+          Value = '󰦨',
+          Enum = '󰦨',
+          EnumMember = '󰦨',
+          Keyword = '󰻾',
+          Constant = '󰏿',
+          Snippet = '󱄽',
+          Color = '󰏘',
+          File = '󰈔',
+          Reference = '󰬲',
+          Folder = '󰉋',
+          Event = '󱐋',
+          Operator = '󰪚',
+          TypeParameter = '󰬛',
+        },
+      },
     },
   },
 
@@ -1015,7 +1004,6 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      -- require('mini.surround').setup()
 
       require('mini.surround').setup {
         custom_surroundings = {
@@ -1063,7 +1051,7 @@ require('lazy').setup({
       end
 
       -- setup mini animations
-      require('mini.animate').setup()
+      -- require('mini.animate').setup()
 
       -- setup mini.map
       require('mini.map').setup {
@@ -1101,6 +1089,7 @@ require('lazy').setup({
         'markdown',
         'vim',
         'vimdoc',
+        'regex',
         'rust',
         'python',
         'go',
