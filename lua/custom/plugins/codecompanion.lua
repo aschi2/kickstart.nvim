@@ -1,15 +1,35 @@
 return {
   'olimorris/codecompanion.nvim',
+  lazy = false,
   opts = {
+    extensions = {
+      mcphub = {
+        callback = 'mcphub.extensions.codecompanion',
+        opts = {
+          show_result_in_chat = true,
+          make_vars = true,
+          make_slash_commands = true,
+        },
+      },
+    },
     strategies = {
       chat = {
         adapter = 'openai',
+        parameters = { reasoning_effort = 'high' },
+        tools = {
+          opts = {
+            auto_submit_errors = true,
+            auto_submit_success = true,
+          },
+        },
       },
       inline = {
         adapter = 'openai',
+        parameters = { reasoning_effort = 'high' },
       },
       cmd = {
         adapter = 'openai',
+        parameters = { reasoning_effort = 'high' },
       },
     },
     adapters = {
@@ -20,7 +40,7 @@ return {
           },
           schema = {
             model = {
-              default = 'gpt-4.1',
+              default = 'o3-2025-04-16',
             },
           },
         })
@@ -30,7 +50,7 @@ return {
       return require('codecompanion.adapters').extend('gemini', {
         schema = {
           model = {
-            default = 'Gemini-2.5-pro-exp-03-25',
+            default = 'gemini-2.5-pro-preview-06-05',
           },
         },
         env = {
