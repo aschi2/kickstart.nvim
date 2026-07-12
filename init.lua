@@ -166,17 +166,16 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
--- Show Tabline
-vim.opt.showtabline = 2
-
 -- Fold based on syntax
 vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldlevel = 99
 -- vim.opt.foldlevelstart = 3
 -- vim.opt.foldnestmax = 4
-vim.opt.foldcolumn = '0'
 vim.opt.foldtext = ''
+
+-- Fuzzy matching for cmdline completion (base wildmenu popup handles the rest)
+vim.opt.wildoptions:append 'fuzzy'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -256,26 +255,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.hl.on_yank() end,
 })
 
--- Setup Justfile Detection
--- Create the autocmd
-vim.api.nvim_create_autocmd({ 'VimEnter', 'BufWinEnter', 'BufRead', 'BufNewFile' }, {
-  pattern = { '*.just', 'justfile', '.justfile' },
-  group = vim.api.nvim_create_augroup('JustfileSettings', { clear = true }),
-  callback = function()
-    vim.bo.filetype = 'just'
-    vim.bo.commentstring = '# %s'
-  end,
-})
-
--- Setup kdl Detection
--- Create the autocmd
-vim.api.nvim_create_autocmd({ 'VimEnter', 'BufWinEnter', 'BufRead', 'BufNewFile' }, {
-  pattern = { '*.kdl' },
-  group = vim.api.nvim_create_augroup('KDLSettings', { clear = true }),
-  callback = function()
-    vim.bo.commentstring = '// %s'
-  end,
-})
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -363,11 +342,8 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename/[R]un' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
         { 'gr', group = 'LSP Actions', mode = { 'n' } },
       },
     },
@@ -616,46 +592,15 @@ require('lazy').setup({
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
-          map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
+          -- grn (rename) and gra (code action) are nvim 0.11 built-in defaults; not re-mapped here.
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
-          -- The following two autocommands are used to highlight references of the
-          -- word under your cursor when your cursor rests there for a little while.
-          --    See `:help CursorHold` for information about when this is executed
-          --
-          -- When you move your cursor, the highlights will be cleared (the second autocommand).
+          -- Reference highlighting under the cursor is handled by snacks.words
+          -- (see lua/custom/plugins/snacks.lua), not the kickstart autocmds.
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client:supports_method('textDocument/documentHighlight', event.buf) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.document_highlight,
-            })
-
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.clear_references,
-            })
-
-            vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-              end,
-            })
-          end
 
           -- The following code creates a keymap to toggle inlay hints in your
           -- code, if the language server you are using supports them
@@ -716,7 +661,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
 
-        stylua = {}, -- Used to format Lua code
 
         -- Special Lua Config, as recommended by neovim help docs
         lua_ls = {
@@ -769,7 +713,7 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        -- You can add other tools here that you want Mason to install
+        'stylua', -- Used to format Lua code (via conform, not an LSP server)
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -816,7 +760,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         terraform = { 'terraform_fmt' },
-        go = { 'gofmt', 'goimports', 'goimports-reviser', 'gofumpt' },
+        go = { 'gofmt', 'goimports', 'goimports-reviser' },
         python = { 'ruff_format', 'ruff_fix', 'ruff_organize_imports' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -833,30 +777,9 @@ require('lazy').setup({
     event = 'VimEnter',
     version = '1.*',
     dependencies = {
-      -- Snippet Engine
-      {
-        'L3MON4D3/LuaSnip',
-        version = '2.*',
-        build = (function()
-          -- Build Step is needed for regex support in snippets.
-          -- This step is not supported in many windows environments.
-          -- Remove the below condition to re-enable on windows.
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then return end
-          return 'make install_jsregexp'
-        end)(),
-        dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          {
-            'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
-          },
-        },
-        opts = {},
-      },
+      -- Premade snippets, loaded by blink's built-in snippets source from the
+      -- runtimepath (base vim.snippet does the expansion; LuaSnip was unused).
+      'rafamadriz/friendly-snippets',
     },
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
@@ -971,7 +894,6 @@ require('lazy').setup({
       }
 
       -- Remap adding surrounding to Visual mode selection
-      vim.api.nvim_set_keymap('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { noremap = true })
 
       -- Make special mapping for "add surrounding for line"
       vim.api.nvim_set_keymap('n', 'yss', 'ys_', { noremap = false })
@@ -989,7 +911,6 @@ require('lazy').setup({
 
       -- setup mini file explorer and setup toggle
       require('mini.files').setup {}
-      require('mini.files').setup()
       local minifiles_toggle = function(...)
         if not MiniFiles.close() then
           MiniFiles.open(...)
@@ -1047,7 +968,6 @@ require('lazy').setup({
         'typescript',
         'markdown_inline',
         'just',
-        'typescript',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
@@ -1113,7 +1033,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- indent guides come from snacks.indent (lua/custom/plugins/snacks.lua)
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',

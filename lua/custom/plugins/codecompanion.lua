@@ -19,7 +19,6 @@ return {
     strategies = {
       chat = {
         adapter = 'openai',
-        parameters = { reasoning_effort = 'high' },
         tools = {
           opts = {
             auto_submit_errors = true,
@@ -29,11 +28,9 @@ return {
       },
       inline = {
         adapter = 'openai',
-        parameters = { reasoning_effort = 'high' },
       },
       cmd = {
         adapter = 'openai',
-        parameters = { reasoning_effort = 'high' },
       },
     },
     adapters = {
@@ -46,22 +43,27 @@ return {
             model = {
               default = 'o3-2025-04-16',
             },
+            -- strategies.*.parameters is not read by v17; the adapter schema is
+            reasoning_effort = {
+              default = 'high',
+            },
+          },
+        })
+      end,
+      -- was previously a sibling of adapters (dead config); moved inside
+      gemini = function()
+        return require('codecompanion.adapters').extend('gemini', {
+          schema = {
+            model = {
+              default = 'gemini-2.5-pro', -- preview-06-05 alias was retired at GA
+            },
+          },
+          env = {
+            api_key = 'GEMINI_API_KEY',
           },
         })
       end,
     },
-    gemini = function()
-      return require('codecompanion.adapters').extend('gemini', {
-        schema = {
-          model = {
-            default = 'gemini-2.5-pro-preview-06-05',
-          },
-        },
-        env = {
-          api_key = 'GEMINI_API_KEY',
-        },
-      })
-    end,
   },
   dependencies = {
     'nvim-lua/plenary.nvim',

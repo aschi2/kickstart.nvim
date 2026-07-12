@@ -83,6 +83,7 @@ return {
     },
     debug = { enabled = true },
     gitbrowse = { enabled = true },
+    image = { enabled = true }, -- kitty-graphics image viewer (replaces image.nvim; works in ghostty)
     indent = { enabled = true },
     input = { enabled = true },
     notify = { enabled = true },
