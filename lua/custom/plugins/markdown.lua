@@ -1,7 +1,5 @@
-return {
-  'MeanderingProgrammer/render-markdown.nvim', -- renamed upstream from markdown.nvim
-  dependencies = { 'nvim-treesitter/nvim-treesitter' },
-  config = function()
-    require('render-markdown').setup {}
-  end,
+vim.pack.add {
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim', -- renamed upstream from markdown.nvim
 }
+
+require('render-markdown').setup {}

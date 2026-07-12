@@ -1,33 +1,23 @@
 local vault = vim.fn.expand '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault'
 
-return {
-  'obsidian-nvim/obsidian.nvim', -- community-maintained successor to epwalsh/obsidian.nvim
-  version = '*', -- recommended, use latest release instead of latest commit
-  lazy = true,
-  event = {
-    'BufReadPre ' .. vault .. '/**/*.md',
-    'BufNewFile ' .. vault .. '/**/*.md',
-  },
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-telescope/telescope.nvim',
-    'nvim-treesitter/nvim-treesitter',
-  },
-  opts = {
-    workspaces = {
-      {
-        name = 'Obsidian',
-        path = vault,
-      },
+vim.pack.add {
+  -- community-maintained successor to epwalsh/obsidian.nvim
+  { src = 'https://github.com/obsidian-nvim/obsidian.nvim', version = vim.version.range '*' }, -- recommended, use latest release instead of latest commit
+}
+
+vim.o.conceallevel = 1
+
+require('obsidian').setup {
+  workspaces = {
+    {
+      name = 'Obsidian',
+      path = vault,
     },
-    completion = {
-      nvim_cmp = false,
-      blink = true,
-      min_chars = 2,
-    },
-    new_notes_location = 'current_dir',
   },
-  init = function()
-    vim.o.conceallevel = 1
-  end,
+  -- completion comes from obsidian's built-in obsidian-ls LSP (3.x+)
+  completion = {
+    min_chars = 2,
+  },
+  legacy_commands = false, -- use the new :Obsidian <subcommand> style
+  new_notes_location = 'current_dir',
 }

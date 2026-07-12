@@ -1,3 +1,5 @@
+vim.pack.add { 'https://github.com/folke/snacks.nvim' }
+
 -- utility to read header from file (falls back to nil if the file is missing)
 local function read_header(path)
   path = vim.fs.normalize(path)
@@ -14,6 +16,72 @@ local function read_header(path)
   return table.concat(lines, '\n')
 end
 
+require('snacks').setup {
+  animate = { enabled = true },
+  bigfile = { enabled = true },
+  dashboard = { -- Dashboard configuration should be directly here
+    enabled = true,
+    preset = {
+      header = read_header '~/.anya',
+      keys = {
+        {
+          icon = ' ',
+          key = 'e',
+          desc = 'New file',
+          action = ':ene | startinsert',
+        },
+        {
+          icon = ' ',
+          key = 'r',
+          desc = 'Recent',
+          action = function()
+            require('telescope.builtin').oldfiles()
+          end,
+        },
+        {
+          icon = ' ',
+          key = 's',
+          desc = 'Settings',
+          action = ':e ~/.config/nvim/init.lua | pwd',
+        },
+        {
+          icon = '󰒲 ',
+          key = 'u',
+          desc = 'Update plugins',
+          action = ':lua vim.pack.update()',
+        },
+        {
+          icon = ' ',
+          key = 'q',
+          desc = 'Quit NVIM',
+          action = ':qa',
+        },
+      },
+      sections = {
+        { header = 'header' },
+        { keys = 'keys' },
+        { section = 'startup' },
+      },
+    },
+  },
+  debug = { enabled = true },
+  gitbrowse = { enabled = true },
+  image = { enabled = true }, -- kitty-graphics image viewer (replaces image.nvim; works in ghostty)
+  indent = { enabled = true },
+  input = { enabled = true },
+  notify = { enabled = true },
+  notifier = { enabled = true },
+  quickfile = { enabled = true },
+  rename = { enabled = true },
+  scope = { enabled = true },
+  scroll = { enabled = true },
+  statuscolumn = { enabled = true },
+  terminal = { enabled = true },
+  util = { enabled = true },
+  win = { enabled = true },
+  words = { enabled = true },
+}
+
 vim.api.nvim_create_autocmd('User', {
   pattern = 'MiniFilesActionRename',
   callback = function(event)
@@ -28,74 +96,3 @@ end, { desc = '[G]it [B]rowse' })
 vim.keymap.set('n', '<leader>lg', function()
   Snacks.lazygit()
 end, { desc = '[L]azy [G]it' })
-
-return {
-  'folke/snacks.nvim',
-  priority = 1000,
-  lazy = false,
-  opts = {
-    animate = { enabled = true },
-    bigfile = { enabled = true },
-    dashboard = { -- Dashboard configuration should be directly here
-      enabled = true,
-      preset = {
-        header = read_header '~/.anya',
-        keys = {
-          {
-            icon = ' ',
-            key = 'e',
-            desc = 'New file',
-            action = ':ene | startinsert',
-          },
-          {
-            icon = ' ',
-            key = 'r',
-            desc = 'Recent',
-            action = function()
-              require('telescope.builtin').oldfiles()
-            end,
-          },
-          {
-            icon = ' ',
-            key = 's',
-            desc = 'Settings',
-            action = ':e ~/.config/nvim/init.lua | pwd',
-          },
-          {
-            icon = '󰒲 ',
-            key = 'l',
-            desc = 'Lazy',
-            action = ':Lazy',
-          },
-          {
-            icon = ' ',
-            key = 'q',
-            desc = 'Quit NVIM',
-            action = ':qa',
-          },
-        },
-        sections = {
-          { header = 'header' },
-          { keys = 'keys' },
-          { section = 'startup' },
-        },
-      },
-    },
-    debug = { enabled = true },
-    gitbrowse = { enabled = true },
-    image = { enabled = true }, -- kitty-graphics image viewer (replaces image.nvim; works in ghostty)
-    indent = { enabled = true },
-    input = { enabled = true },
-    notify = { enabled = true },
-    notifier = { enabled = true },
-    quickfile = { enabled = true },
-    rename = { enabled = true },
-    scope = { enabled = true },
-    scroll = { enabled = true },
-    statuscolumn = { enabled = true },
-    terminal = { enabled = true },
-    util = { enabled = true },
-    win = { enabled = true },
-    words = { enabled = true },
-  },
-}
