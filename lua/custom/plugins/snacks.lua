@@ -1,9 +1,15 @@
--- utility to read header from file
+-- utility to read header from file (falls back to nil if the file is missing)
 local function read_header(path)
-  local lines = {}
   path = vim.fs.normalize(path)
-  for line in io.lines(path) do
-    table.insert(lines, line)
+  local ok, lines = pcall(function()
+    local out = {}
+    for line in io.lines(path) do
+      table.insert(out, line)
+    end
+    return out
+  end)
+  if not ok or #lines == 0 then
+    return nil
   end
   return table.concat(lines, '\n')
 end

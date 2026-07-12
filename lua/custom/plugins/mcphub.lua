@@ -1,5 +1,6 @@
 return {
   'ravitemer/mcphub.nvim',
+  branch = 'main',
   dependencies = {
     'nvim-lua/plenary.nvim',
   },
