@@ -1,6 +1,9 @@
 return {
   'ravitemer/mcphub.nvim',
-  branch = 'main',
+  -- Pinned: last commit compatible with codecompanion v17 (mcphub added
+  -- codecompanion-v18 support in 5193329 and reads config.interactions.*,
+  -- which is nil on v17). Bump together with codecompanion.
+  commit = '8ff40b5',
   dependencies = {
     'nvim-lua/plenary.nvim',
   },

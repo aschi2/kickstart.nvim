@@ -1,5 +1,9 @@
 return {
   'olimorris/codecompanion.nvim',
+  -- Pinned: this config uses the v17 schema (strategies=...); v18+ renamed it
+  -- to interactions and v19 moved chat variables out of the static config.
+  -- Bump only together with a config rewrite and an mcphub compatibility check.
+  version = 'v17.11.0',
   lazy = false,
   opts = {
     extensions = {
