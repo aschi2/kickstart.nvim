@@ -395,8 +395,9 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'neanias/everforest-nvim' }
-  vim.cmd.colorscheme 'everforest'
+  vim.pack.add { gh 'oxfist/night-owl.nvim' }
+  require('night-owl').setup()
+  vim.cmd.colorscheme 'night-owl'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }

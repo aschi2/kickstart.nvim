@@ -21,10 +21,6 @@
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "everforest-nvim": {
-      "rev": "d235ca0aa6a29546e661a020e2618612acbbffbe",
-      "src": "https://github.com/neanias/everforest-nvim"
-    },
     "fidget.nvim": {
       "rev": "6f793b2bcd2d35e201c09520f698bb763220908a",
       "src": "https://github.com/j-hui/fidget.nvim"
@@ -72,6 +68,10 @@
     "mini.nvim": {
       "rev": "db41c4076105a63caec12612d11228348f55a109",
       "src": "https://github.com/nvim-mini/mini.nvim"
+    },
+    "night-owl.nvim": {
+      "rev": "86ed124c2f7e118670649701288e024444bf91e5",
+      "src": "https://github.com/oxfist/night-owl.nvim"
     },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
